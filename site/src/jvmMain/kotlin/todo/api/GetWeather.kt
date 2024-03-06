@@ -33,6 +33,7 @@ suspend fun getWeather(ctx: ApiContext) {
 
     }
 
+
     ctx.logger.debug("Received get weather response: ${response}")
 
     ctx.res.status = 200

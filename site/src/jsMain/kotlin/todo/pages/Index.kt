@@ -3,6 +3,7 @@ package todo.pages
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.*
 import com.varabyte.kobweb.browser.api
+import com.varabyte.kobweb.browser.http.http
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.WhiteSpace
@@ -97,9 +98,10 @@ fun HomePage() {
                     coroutineScope.launch {
                         println("Im in the button coroutine start")
 
-                        window.api.post("getWeatherData").decodeToString()
-
-                        println("Im in the button coroutine end")
+//                        window.api.post("getWeatherData").decodeToString()
+                        val response = window.http.get("https://api.weather.gov/").decodeToString()
+                        println("response is ${response}")
+                        println("Im in the button coroutine end ")
 
                     }
                     println("Im in the button onclick after the  coroutine")
