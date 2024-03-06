@@ -92,11 +92,18 @@ fun HomePage() {
 
 
                 Button(onClick = {
+                    println("Im in the button onclick before the  coroutine")
+
                     coroutineScope.launch {
-                        loadingCount++
+                        println("Im in the button coroutine start")
+
                         window.api.post("getWeatherData").decodeToString()
-                        loadingCount--
+
+                        println("Im in the button coroutine end")
+
                     }
+                    println("Im in the button onclick after the  coroutine")
+
                 }) { Text(value = "Get weather data") }
 
 
