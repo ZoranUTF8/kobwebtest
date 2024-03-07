@@ -26,6 +26,7 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.em
@@ -34,27 +35,13 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Footer
 import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.xhr.FormData
 import todo.components.widgets.LoadingSpinner
 import todo.components.widgets.TodoCard
 import todo.components.widgets.TodoForm
 import todo.model.TodoItem
+import kotlin.js.json
 
-private suspend fun loadAndReplaceTodos(id: String, todos: SnapshotStateList<TodoItem>) {
-    return window.api.get("list?owner=$id").let { listBytes ->
-        Snapshot.withMutableSnapshot {
-            todos.clear()
-            todos.addAll(Json.decodeFromString(listBytes.decodeToString()))
-        }
-    }
-}
-
-val TitleStyle by ComponentStyle.base {
-    Modifier
-        .lineHeight(1.15)
-        .fontSize(4.cssRem)
-        .margin(top = 0.4.em, bottom = 0.6.em)
-        .fontWeight(FontWeight.Bold)
-}
 
 @Page
 @Composable
@@ -65,18 +52,7 @@ fun HomePage() {
     val todos = remember { mutableStateListOf<TodoItem>() }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        check(!ready && loadingCount == 1)
-        id = window.localStorage.getItem("id") ?: run {
-            window.api.get("id").decodeToString().also {
-                window.localStorage.setItem("id", it)
-            }
-        }
 
-        loadAndReplaceTodos(id, todos)
-        loadingCount--
-        ready = true
-    }
 
     Column(
         modifier = Modifier.fillMaxSize().minWidth(600.px),
@@ -97,10 +73,39 @@ fun HomePage() {
 
                     coroutineScope.launch {
                         println("Im in the button coroutine start")
+                        val response = window.api.post("getweather").decodeToString()
+//                        val response = window.http.post("getweather").decodeToString()
 
-//                        window.api.post("getWeatherData").decodeToString()
-                        val response = window.http.get("https://api.weather.gov/").decodeToString()
-                        println("response is ${response}")
+//                        val response = window.http.get("https://api.weather.gov/").decodeToString()
+//                        println("response is ${response}")
+//
+//                        val myBody = MyBody(
+//                            "user",
+//                            "get_user_info_from_email",
+//                            "gladmin@gl-navi.co.jp"
+//                        )
+//
+//                        val byteArray = Json.encodeToString(myBody).encodeToByteArray()
+//
+//
+//                        val awsDB = "https://p1mjhl95g4.execute-api.ap-northeast-1.amazonaws.com/default/no-proxy"
+//
+//                        val header = mapOf("x-api-key" to Credentials.API_KEY, "Access-Control-Allow-Origin" to '*')
+//
+//                        val response = window.http.post(awsDB,headers = header, body = byteArray).decodeToString()
+
+
+//
+//                        val postData = "Hello, HTTPBin!".encodeToByteArray()
+//
+//                        val response = window.http.post(
+//                            resource = "https://httpbin.org/post",
+//                            body = postData
+//                        ).decodeToString()
+
+                        println("response is $response")
+
+
                         println("Im in the button coroutine end ")
 
                     }

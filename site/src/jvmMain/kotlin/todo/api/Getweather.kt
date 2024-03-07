@@ -2,8 +2,8 @@ package todo.api
 
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
+import com.varabyte.kobweb.api.http.setBodyText
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -13,7 +13,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 
-@Api(routeOverride = "getWeatherData")
+@Api(routeOverride = "getweather")
 suspend fun getWeather(ctx: ApiContext) {
 
     ctx.logger.debug("Received get weather request")
@@ -27,14 +27,13 @@ suspend fun getWeather(ctx: ApiContext) {
         }
     }
 
-    val response: HttpResponse = client.get("https://api.weather.gov/") {
-
+    val response: HttpResponse = client.post("https://httpbin.org/post") {
         contentType(ContentType.Application.Json)
-
     }
 
 
-    ctx.logger.debug("Received get weather response: ${response}")
+    ctx.logger.debug("Received get weather response: $response")
 
+    ctx.res.setBodyText(response.toString())
     ctx.res.status = 200
 }
